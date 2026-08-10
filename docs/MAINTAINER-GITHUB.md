@@ -3,6 +3,11 @@
 This document describes the repository settings and release flow that cannot
 be enforced by files alone.
 
+Before enabling automated releases, set Actions workflow permissions to
+**Read and write permissions** and enable **Allow GitHub Actions to create and
+approve pull requests** in the repository's Actions settings. The workflow
+still creates a reviewable release PR; it does not merge that PR automatically.
+
 ## Protect `main`
 
 In GitHub repository settings, create a branch rule for `main` with:
@@ -29,21 +34,18 @@ change in an issue or release note afterward.
 5. Use squash merge for focused changes; keep the issue and PR references in
    the resulting commit message.
 
-## Release tags
+## Automated releases
 
-1. Merge the release preparation change into a green `main`.
-2. Update `Cargo.toml` and `Cargo.lock` when the package version changes.
-3. Run the full local gate from `CONTRIBUTING.md`.
-4. Create and push an annotated semantic-version tag:
+1. Merge normal Conventional Commit pull requests into a green `main`.
+2. The release workflow opens or updates a release PR with the calculated
+   semantic version, `Cargo.toml`, `Cargo.lock`, and `CHANGELOG.md` changes.
+3. Review the release PR and generated notes, then merge it when ready.
+4. The workflow creates and pushes the annotated `vX.Y.Z` tag automatically
+   after the release PR is merged.
 
-   ```bash
-   git tag -a vX.Y.Z -m "Release vX.Y.Z"
-   git push origin vX.Y.Z
-   ```
-
-5. The tag starts `.github/workflows/release.yml`, which builds Linux, macOS,
-   and Windows archives.
-6. GitHub generates categorized release notes using [`.github/release.yml`](../.github/release.yml).
+5. The same workflow builds Linux, macOS, and Windows archives.
+6. Release-please generates categorized release notes using
+   [`release-please-config.json`](../release-please-config.json).
    Review the wording, remove internal details, and add a short context paragraph
    when the generated notes need clarification.
 7. Verify both `codex-gearbox` and `shift` are present in each archive, test

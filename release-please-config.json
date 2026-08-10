@@ -1,0 +1,13 @@
+{
+  "release-type": "rust",
+  "include-v-in-tag": true,
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": false,
+  "changelog-sections": [
+    { "type": "feat", "section": "🚀 New for users" },
+    { "type": "fix", "section": "🐛 Fixes" },
+    { "type": "perf", "section": "⚡ Performance" },
+    { "type": "refactor", "section": "🛠 Maintenance" },
+    { "type": "docs", "section": "📚 Documentation" }
+  ]
+}
