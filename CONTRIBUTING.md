@@ -49,8 +49,10 @@ policy and branch-protection checklist are in
 
 Releases are cut from a green `main` by merging the automated release PR. The
 workflow calculates the version, updates the package and changelog, creates an
-annotated `vX.Y.Z` tag, and publishes the cross-platform archives. Maintainers
-verify the generated archives and release notes before announcing the release.
+annotated `vX.Y.Z` tag, and publishes release notes with GitHub source archives.
+Prebuilt binaries are not attached; the regular CI matrix still validates
+release builds on Linux, macOS, and Windows. Maintainers verify the source
+release and notes before announcing the release.
 Release-please groups those notes using `release-please-config.json`, so
 contributors should keep PR titles plain-language and maintainers should apply
 one release label before merging.
@@ -64,7 +66,7 @@ Version selection is automated from Conventional Commits by
 - `docs:`, `test:`, and `chore:` → no release
 
 The action opens a release PR with the calculated version and changelog. Merge
-that PR to create the `vX.Y.Z` tag and publish the platform archives.
+that PR to create the `vX.Y.Z` tag and publish the source-based release.
 
 Never report secrets or private prompts in issues or pull requests. Follow
 [`SECURITY.md`](SECURITY.md) for vulnerabilities.

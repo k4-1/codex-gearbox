@@ -116,9 +116,11 @@ shift report               inspect aggregate local metrics
 shift hook                 serve the desktop hook protocol
 ```
 
-Keep plugin hook command names, README examples, release bundles, and Windows
-variants synchronized. App Server WebSocket behavior is experimental; link to
-the relevant official OpenAI documentation when changing protocol methods.
+Keep plugin hook command names, README examples, cross-platform CI builds, and
+Windows variants synchronized. The release workflow publishes source archives
+and notes only; do not assume downloadable binary assets exist. App Server
+WebSocket behavior is experimental; link to the relevant official OpenAI
+documentation when changing protocol methods.
 
 ## 7. Handoff format
 
