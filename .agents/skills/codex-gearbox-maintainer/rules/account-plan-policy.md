@@ -10,8 +10,8 @@ incomplete.
 
 - Free accounts never invoke the Luna judge.
 - API-key judging stays opt-in and never assumes ChatGPT subscription access.
-- Subscribed judging requires an enabled judge, healthy usage band, available
-  judge model, and ambiguity below the configured confidence threshold.
+- Subscribed judging requires an enabled judge, healthy usage band, an available
+  judge model, and an ambiguous or near-threshold deterministic route.
 - Never select a model absent from the live catalog when the catalog is known.
 - Apply conservation and critical rate bands before optional judge work.
 - Apply user effort caps, but never let a cap remove the high-risk minimum.

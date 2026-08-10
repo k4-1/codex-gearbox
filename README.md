@@ -14,7 +14,12 @@ It has two modes:
 
 ## How routing works
 
-Clear prompts use deterministic local rules. On subscribed ChatGPT plans, ambiguous prompts may be classified by a fresh GPT-5.6 Luna Medium judge when Luna is available and account usage is healthy. Free accounts never call the judge. Deterministic policy always makes the final choice and applies model availability, rate limits, safety floors, user caps, and manual overrides.
+Clear prompts use deterministic local rules. On subscribed ChatGPT plans,
+ambiguous or near-threshold prompts may be classified by a fresh GPT-5.6 Luna
+Medium judge when Luna is available and account usage is healthy. Free accounts
+never call the judge, and API-key judging is opt-in. The judge returns scores and
+confidence; deterministic policy always makes the final choice and applies model
+availability, rate limits, safety floors, user caps, and manual overrides.
 
 Gearbox does not store prompts. Optional local JSONL metrics contain only the selected model, effort, routing source, confidence, plan class, rate band, and timestamp.
 
@@ -60,7 +65,11 @@ codex plugin marketplace add "$(pwd)"
 codex plugin add codex-gearbox@personal
 ```
 
-In Codex desktop, the plugin's `UserPromptSubmit` hook runs `shift hook`. Current hooks cannot change model or effort, so Advisor mode blocks a mismatched model with a recommendation; select it and resend. Correctly routed prompts continue immediately.
+In Codex desktop, the plugin's `UserPromptSubmit` hook runs `env shift hook` so
+the `shift` shell builtin cannot shadow the installed helper. Current hooks
+cannot change model or effort, so Advisor mode blocks a mismatched model with a
+recommendation; select it and resend. Correctly routed prompts continue
+immediately.
 
 ## Configuration
 

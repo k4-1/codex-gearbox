@@ -251,7 +251,7 @@ impl Router {
             && account_allows
             && !plan_disabled
             && self.rate_band == RateBand::Normal
-            && route.confidence < self.config.confidence_threshold
+            && (route.confidence < self.config.confidence_threshold || needs_judgment(route))
             && self.models.iter().any(|m| {
                 m.model == self.config.judge_model && supports_effort(m, &self.config.judge_effort)
             })
@@ -263,6 +263,8 @@ impl Router {
             || (scores.reasoning_depth >= 2 && (scores.scope >= 1 || scores.ambiguity >= 1))
         {
             Role::Deep
+        } else if scores.reasoning_depth >= 2 {
+            Role::Balanced
         } else if total <= 3 && scores.ambiguity == 0 {
             Role::Fast
         } else {
@@ -284,14 +286,16 @@ impl Router {
             6..=8 => Effort::High,
             _ => Effort::Xhigh,
         };
+        if scores.reasoning_depth >= 2 {
+            effort = effort.max(Effort::Medium);
+        }
         if let Some(minimum) = Effort::from_str(&self.config.min_effort) {
             effort = effort.max(minimum);
         }
         if let Some(maximum) = Effort::from_str(&self.config.max_effort) {
             effort = effort.min(maximum);
         }
-        if scores.risk >= 2 {
-            role = Role::Deep;
+        if scores.risk >= 1 {
             effort = effort.max(Effort::High);
         }
 
@@ -453,6 +457,10 @@ fn confidence(scores: &FeatureScores) -> u8 {
         .max(40)
 }
 
+fn needs_judgment(route: &RouteDecision) -> bool {
+    route.scores.ambiguity > 0 || matches!(route.scores.total(), 2 | 3 | 5 | 6)
+}
+
 fn reason(scores: &FeatureScores, role: Role) -> String {
     if scores.risk > 0 {
         return "risk-sensitive task".into();
@@ -495,6 +503,21 @@ mod tests {
     }
 
     #[test]
+    fn routes_architecture_reasoning_to_terra_medium() {
+        let route = router()
+            .deterministic("Investigate the architecture tradeoffs and compare design choices");
+        assert_eq!(route.model, "gpt-5.6-terra");
+        assert_eq!(route.effort, Effort::Medium);
+    }
+
+    #[test]
+    fn applies_high_floor_to_single_category_security_work() {
+        let route = router().deterministic("Review this security design for vulnerabilities");
+        assert_eq!(route.model, "gpt-5.6-sol");
+        assert_eq!(route.effort, Effort::High);
+    }
+
+    #[test]
     fn never_selects_an_unavailable_model() {
         let models = vec![ModelInfo::synthetic("only-model")];
         let route = Router::new(Config::default(), models, RateBand::Normal)
@@ -518,6 +541,20 @@ mod tests {
     #[test]
     fn subscribed_ambiguous_prompts_can_use_luna_judge() {
         let route = router().deterministic("Fix it");
+        assert!(router().should_judge(&route, AccountClass::Subscribed, Some("plus")));
+    }
+
+    #[test]
+    fn clear_prompts_skip_luna_judge() {
+        let route = router().deterministic("Rename the variable");
+        assert!(!router().should_judge(&route, AccountClass::Subscribed, Some("plus")));
+    }
+
+    #[test]
+    fn boundary_prompts_use_luna_judge_even_with_high_rule_confidence() {
+        let route = router()
+            .deterministic("Investigate the architecture tradeoffs and compare design choices");
+        assert!(route.confidence >= Config::default().confidence_threshold);
         assert!(router().should_judge(&route, AccountClass::Subscribed, Some("plus")));
     }
 

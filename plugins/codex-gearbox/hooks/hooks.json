@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "shift hook",
+            "command": "env shift hook",
             "commandWindows": "shift.exe hook",
             "timeout": 20,
             "statusMessage": "Selecting a Codex gear"
