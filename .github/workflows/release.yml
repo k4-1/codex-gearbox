@@ -12,72 +12,8 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - id: release
-        uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v4
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
-
-  build:
-    needs: release-please
-    if: needs.release-please.outputs.release_created == 'true'
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            artifact: codex-gearbox-linux-x86_64
-          - os: macos-latest
-            artifact: codex-gearbox-macos
-          - os: windows-latest
-            artifact: codex-gearbox-windows-x86_64
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.release-please.outputs.tag_name }}
-      - uses: dtolnay/rust-toolchain@stable
-      - run: cargo build --release --locked
-      - name: Stage Unix binary
-        if: runner.os != 'Windows'
-        run: |
-          mkdir "${{ matrix.artifact }}-bundle"
-          cp target/release/codex-gearbox "${{ matrix.artifact }}-bundle/"
-          cp target/release/shift "${{ matrix.artifact }}-bundle/"
-      - name: Stage Windows binary
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Path "${{ matrix.artifact }}-bundle" | Out-Null
-          Copy-Item target/release/codex-gearbox.exe "${{ matrix.artifact }}-bundle/"
-          Copy-Item target/release/shift.exe "${{ matrix.artifact }}-bundle/"
-      - name: Archive bundle
-        if: runner.os != 'Windows'
-        run: tar -czf "${{ matrix.artifact }}.tar.gz" -C "${{ matrix.artifact }}-bundle" .
-      - name: Archive Windows bundle
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: Compress-Archive -Path "${{ matrix.artifact }}-bundle/*" -DestinationPath "${{ matrix.artifact }}.zip"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.artifact }}
-          path: ${{ matrix.artifact }}.*
-
-  publish:
-    needs: [release-please, build]
-    if: needs.release-please.outputs.release_created == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: dist
-          merge-multiple: true
-      - uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ needs.release-please.outputs.tag_name }}
-          files: dist/*
-          fail_on_unmatched_files: true
-          generate_release_notes: false

@@ -23,7 +23,8 @@ cargo build --release --locked
 - Keep the GitHub matrix green on Linux, macOS, and Windows.
 - Validate `plugins/codex-gearbox/` with the official plugin validator after
   manifest or hook changes.
-- Ensure release bundles contain both `codex-gearbox` and `shift` binaries.
+- Keep cross-platform CI release builds green; binary release assets are
+  intentionally disabled to avoid persistent storage overhead.
 - Never call a live judge or App Server test successful when only a local
   deterministic fallback was exercised.
 - Avoid tests that mutate real user settings, send real coding tasks, consume

@@ -43,14 +43,15 @@ change in an issue or release note afterward.
 4. The workflow creates and pushes the annotated `vX.Y.Z` tag automatically
    after the release PR is merged.
 
-5. The same workflow builds Linux, macOS, and Windows archives.
+5. CI continues to build release binaries on Linux, macOS, and Windows, but the
+   release workflow does not save or attach binary archives.
 6. Release-please generates categorized release notes using
    [`release-please-config.json`](../release-please-config.json).
    Review the wording, remove internal details, and add a short context paragraph
    when the generated notes need clarification.
-7. Verify both `codex-gearbox` and `shift` are present in each archive, test
-   `codex-gearbox --version`, review generated release notes, and announce the
-   release only after the artifacts are usable.
+7. Review the source archives and generated notes, test the versioned source
+   checkout with `cargo build --release --locked` when needed, and announce the
+   release only after it is usable.
 
 The generated GitHub release history is the canonical changelog. Keep
 [`CHANGELOG.md`](../CHANGELOG.md) as the short pointer and contributor guide;
