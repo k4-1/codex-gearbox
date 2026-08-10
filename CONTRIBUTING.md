@@ -23,7 +23,8 @@ only the rule files relevant to the change.
    `cargo test --all-targets`, and `cargo build --release --locked`.
 6. Validate `plugins/codex-gearbox/` after changing its manifest or hooks.
 7. Push the branch and open a pull request using the repository template. Link
-   the issue, describe the behavior and risk, and list the checks you ran.
+   the issue, use a Conventional Commit title, describe the behavior and risk,
+   and list the checks you ran.
 8. Keep the branch focused while review is in progress. Resolve conversations
    and update the PR when requested; maintainers merge only after required CI
    checks and approvals pass.
@@ -34,13 +35,24 @@ Pull requests target `main`; do not push directly to it. The maintainer merge
 policy and branch-protection checklist are in
 [`docs/MAINTAINER-GITHUB.md`](docs/MAINTAINER-GITHUB.md).
 
-Releases are cut from a green `main` commit by updating the package version,
-creating an annotated `vX.Y.Z` tag, and pushing that tag. The tag starts the
-cross-platform release workflow; maintainers verify the generated archives and
-release notes before announcing the release. GitHub groups those notes using
-the categories in [`.github/release.yml`](.github/release.yml), so contributors
-should keep PR titles plain-language and maintainers should apply one release
-label before merging.
+Releases are cut from a green `main` by merging the automated release PR. The
+workflow calculates the version, updates the package and changelog, creates an
+annotated `vX.Y.Z` tag, and publishes the cross-platform archives. Maintainers
+verify the generated archives and release notes before announcing the release.
+Release-please groups those notes using `release-please-config.json`, so
+contributors should keep PR titles plain-language and maintainers should apply
+one release label before merging.
+
+Version selection is automated from Conventional Commits by
+[`release-please`](https://github.com/googleapis/release-please):
+
+- `fix:`, `perf:` → patch (`0.1.0` → `0.1.1`)
+- `feat:` → minor (`0.1.0` → `0.2.0`)
+- `feat!:`, `fix!:`, or `BREAKING CHANGE:` → breaking release (`0.1.0` → `0.2.0` while pre-`1.0.0`)
+- `docs:`, `test:`, and `chore:` → no release
+
+The action opens a release PR with the calculated version and changelog. Merge
+that PR to create the `vX.Y.Z` tag and publish the platform archives.
 
 Never report secrets or private prompts in issues or pull requests. Follow
 [`SECURITY.md`](SECURITY.md) for vulnerabilities.

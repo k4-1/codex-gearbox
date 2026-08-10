@@ -1,6 +1,10 @@
 ## Summary
 
-<!-- Explain what changed and why. Link the issue with `Closes #123` when applicable. -->
+<!--
+Use a Conventional Commit title: `feat: ...`, `fix: ...`, `perf: ...`,
+`fix(security): ...`, `docs: ...`, or `chore: ...`. Add `!` for a breaking change.
+Link the issue with `Closes #123` when applicable.
+-->
 
 ## User-facing release note
 
