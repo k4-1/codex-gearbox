@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "open-source-checker",
+  "owner": "shipshitdev",
+  "repo": "skills",
+  "path": "bundles/security/skills/open-source-checker",
+  "branch": "master",
+  "sha": "3666299686a16f4fee4d471e788f4541510dfc7d",
+  "source": "manual"
+}

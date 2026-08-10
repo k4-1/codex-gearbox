@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "rust-best-practices",
+  "owner": "apollographql",
+  "repo": "skills",
+  "path": "skills/rust-best-practices",
+  "branch": "main",
+  "sha": "6ef87177d5674b39adc1e58a46149299feefe43a",
+  "source": "manual"
+}

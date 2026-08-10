@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "general-security",
+  "owner": "udapy",
+  "repo": "rust-agentic-skills",
+  "path": "skills/general-security",
+  "branch": "main",
+  "sha": "b0bde3b4121281f389d5598863633115caee5bcc",
+  "source": "manual"
+}
