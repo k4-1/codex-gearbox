@@ -1,0 +1,28 @@
+{
+  "name": "codex-gearbox",
+  "version": "0.1.0+codex.20260810093217",
+  "description": "Advises the best Codex model and reasoning effort before desktop prompts run.",
+  "author": {
+    "name": "Codex Gearbox contributors"
+  },
+  "license": "MIT",
+  "keywords": [
+    "routing",
+    "models",
+    "reasoning",
+    "codex"
+  ],
+  "interface": {
+    "displayName": "Codex Gearbox",
+    "shortDescription": "Model and effort advisor for Codex desktop.",
+    "longDescription": "Checks each desktop prompt with the local Codex Gearbox router and pauses when another model is a better fit.",
+    "developerName": "Codex Gearbox contributors",
+    "category": "Productivity",
+    "capabilities": [
+      "Advisory"
+    ],
+    "defaultPrompt": [
+      "Explain which Codex model fits my next task."
+    ]
+  }
+}

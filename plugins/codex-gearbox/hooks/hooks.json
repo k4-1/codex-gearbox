@@ -1,0 +1,18 @@
+{
+  "description": "Codex Gearbox desktop advisor",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "shift hook",
+            "commandWindows": "shift.exe hook",
+            "timeout": 20,
+            "statusMessage": "Selecting a Codex gear"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+name: Release binaries
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: codex-gearbox-linux-x86_64
+          - os: macos-latest
+            artifact: codex-gearbox-macos
+          - os: windows-latest
+            artifact: codex-gearbox-windows-x86_64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo build --release --locked
+      - name: Stage Unix binary
+        if: runner.os != 'Windows'
+        run: |
+          mkdir "${{ matrix.artifact }}-bundle"
+          cp target/release/codex-gearbox "${{ matrix.artifact }}-bundle/"
+          cp target/release/shift "${{ matrix.artifact }}-bundle/"
+      - name: Stage Windows binary
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path "${{ matrix.artifact }}-bundle" | Out-Null
+          Copy-Item target/release/codex-gearbox.exe "${{ matrix.artifact }}-bundle/"
+          Copy-Item target/release/shift.exe "${{ matrix.artifact }}-bundle/"
+      - name: Archive bundle
+        if: runner.os != 'Windows'
+        run: tar -czf "${{ matrix.artifact }}.tar.gz" -C "${{ matrix.artifact }}-bundle" .
+      - name: Archive Windows bundle
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Compress-Archive -Path "${{ matrix.artifact }}-bundle/*" -DestinationPath "${{ matrix.artifact }}.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}.*
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
