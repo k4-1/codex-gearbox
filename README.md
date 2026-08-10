@@ -104,6 +104,15 @@ skill.
 For the GitHub contribution flow, read [`CONTRIBUTING.md`](CONTRIBUTING.md).
 Release history is maintained automatically on [GitHub Releases](https://github.com/k4-1/codex-gearbox/releases); see [`CHANGELOG.md`](CHANGELOG.md).
 
+### Feedback without code
+
+You can contribute without changing code:
+
+- [Ask a question or share feedback](https://github.com/k4-1/codex-gearbox/discussions)
+- [Report a bug](https://github.com/k4-1/codex-gearbox/issues/new?template=bug_report.yml)
+- [Request a feature](https://github.com/k4-1/codex-gearbox/issues/new?template=feature_request.yml)
+- [Report a security vulnerability privately](SECURITY.md)
+
 The protocol design follows the official OpenAI documentation for [Codex App Server](https://learn.chatgpt.com/docs/app-server), [hooks](https://learn.chatgpt.com/docs/hooks), [models](https://learn.chatgpt.com/docs/models), and [usage](https://learn.chatgpt.com/docs/pricing).
 
 ## License

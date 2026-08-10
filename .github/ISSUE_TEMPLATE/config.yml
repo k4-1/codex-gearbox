@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Ask a question or share general feedback
+    url: https://github.com/k4-1/codex-gearbox/discussions
+    about: Use Discussions for questions, early ideas, and feedback that is not yet an actionable issue.
   - name: Report a security vulnerability
     url: https://github.com/k4-1/codex-gearbox/security/advisories/new
     about: Please report vulnerabilities privately instead of opening a public issue.

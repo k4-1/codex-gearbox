@@ -29,6 +29,18 @@ only the rule files relevant to the change.
    and update the PR when requested; maintainers merge only after required CI
    checks and approvals pass.
 
+## Choose the right channel
+
+You do not need to write code to contribute:
+
+- **Questions or general feedback:** use [GitHub Discussions](https://github.com/k4-1/codex-gearbox/discussions).
+- **A reproducible bug:** use the [bug report form](https://github.com/k4-1/codex-gearbox/issues/new?template=bug_report.yml).
+- **A concrete feature proposal:** use the [feature request form](https://github.com/k4-1/codex-gearbox/issues/new?template=feature_request.yml).
+- **A security vulnerability:** use the private process in [`SECURITY.md`](SECURITY.md).
+
+Maintainers may turn a useful Discussion into an issue once the problem or
+proposal is specific enough to plan.
+
 ## Pull requests and releases
 
 Pull requests target `main`; do not push directly to it. The maintainer merge
