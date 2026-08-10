@@ -90,9 +90,19 @@ Automatic routing never selects Max or Ultra. High-risk work receives at least S
 ```bash
 cargo fmt --check
 cargo clippy --all-targets -- -D warnings
-cargo test
+cargo test --all-targets
+cargo build --release --locked
 python3 /path/to/plugin-creator/scripts/validate_plugin.py plugins/codex-gearbox
 ```
+
+AI agents and contributors should read [`AGENTS.md`](AGENTS.md) first, then
+[`docs/CONTRIBUTING-AI.md`](docs/CONTRIBUTING-AI.md) and the relevant rules in
+`.agents/skills/codex-gearbox-maintainer/rules/`. Rust changes also use the
+pinned Apollo GraphQL [`rust-best-practices`](.agents/skills/rust-best-practices/SKILL.md)
+skill.
+
+For the GitHub contribution flow, read [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Release history is maintained automatically on [GitHub Releases](https://github.com/k4-1/codex-gearbox/releases); see [`CHANGELOG.md`](CHANGELOG.md).
 
 The protocol design follows the official OpenAI documentation for [Codex App Server](https://learn.chatgpt.com/docs/app-server), [hooks](https://learn.chatgpt.com/docs/hooks), [models](https://learn.chatgpt.com/docs/models), and [usage](https://learn.chatgpt.com/docs/pricing).
 

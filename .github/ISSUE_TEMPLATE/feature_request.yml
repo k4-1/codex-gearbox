@@ -1,0 +1,35 @@
+name: Feature request
+description: Propose a focused improvement to Codex Gearbox
+title: "feat: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For behavior changes or new routing signals, explain the policy and safety impact.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the smallest behavior that would solve the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: safety
+    attributes:
+      label: Compatibility and safety impact
+      description: Explain effects on plans, model availability, rate limits, privacy, protocol behavior, or CLI contracts.
+    validations:
+      required: true

@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "harden",
+  "owner": "athola",
+  "repo": "claude-night-market",
+  "path": "plugins/pensive/skills/harden",
+  "branch": "master",
+  "sha": "6be2a52d538b10420bb552217b0977149f56651b",
+  "source": "manual"
+}

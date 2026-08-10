@@ -1,0 +1,59 @@
+name: Bug report
+description: Report a reproducible problem in Codex Gearbox
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include prompts, credentials, API keys, bearer tokens, or personal data.
+        Report security vulnerabilities privately using the security link.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `codex-gearbox --version`.
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      options:
+        - CLI Autopilot
+        - Desktop Advisor
+        - shift utility
+        - Installation or release artifact
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide safe, minimal steps and a redacted example.
+      placeholder: |
+        1. Run ...
+        2. Configure ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Redacted logs or diagnostics
+      description: Remove prompts, secrets, account identifiers, and other private data before posting.
+      render: text

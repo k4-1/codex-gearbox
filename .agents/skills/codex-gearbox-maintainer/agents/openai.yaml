@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Gearbox Maintainer"
+  short_description: "Safely maintain Codex Gearbox"
+  default_prompt: "Use $codex-gearbox-maintainer to implement and verify a Codex Gearbox change."
