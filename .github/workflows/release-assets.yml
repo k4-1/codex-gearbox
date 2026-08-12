@@ -1,0 +1,60 @@
+name: Release assets
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: macos-13
+            target: x86_64-apple-darwin
+          - os: macos-14
+            target: aarch64-apple-darwin
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - run: cargo build --release --locked --target ${{ matrix.target }}
+      - name: Wait for GitHub release
+        shell: bash
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          for attempt in $(seq 1 12); do
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 5
+          done
+          gh release view "$TAG"
+      - name: Upload release binaries
+        shell: bash
+        env:
+          TARGET: ${{ matrix.target }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            extension=".exe"
+          else
+            extension=""
+          fi
+          cp "target/$TARGET/release/codex-gearbox$extension" "codex-gearbox-$TARGET$extension"
+          cp "target/$TARGET/release/shift$extension" "shift-$TARGET$extension"
+          gh release upload "$TAG" \
+            "codex-gearbox-$TARGET$extension" \
+            "shift-$TARGET$extension" \
+            --clobber

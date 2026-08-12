@@ -34,6 +34,12 @@ cargo install --path . --locked --root "$HOME/.local"
 
 Ensure `$HOME/.local/bin` is on `PATH` for both your shell and the ChatGPT desktop app.
 
+After installation, Gearbox checks the pinned GitHub release channel in the
+background once per day. If a newer matching binary is available, it downloads
+it, verifies the release asset digest, and uses it on the next invocation. Set
+`CODEX_GEARBOX_DISABLE_UPDATE=1` to disable this behavior. Plugin manifest,
+hook, and skill changes still require refreshing the installed plugin.
+
 ### CLI Autopilot
 
 Launch the normal Codex terminal UI through Gearbox:

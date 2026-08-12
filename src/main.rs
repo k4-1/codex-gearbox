@@ -4,11 +4,18 @@ use anyhow::{Context, Result, bail};
 use codex_gearbox::{
     Config,
     app_server::{ControlClient, ManagedServer, route_live},
-    hook, metrics, proxy,
+    hook, metrics, proxy, update,
 };
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    if update::is_update_worker() {
+        update::download_latest().await;
+        return Ok(());
+    }
+    if let Some(code) = update::delegate_to_cached().await? {
+        std::process::exit(code);
+    }
     let mut args: Vec<String> = std::env::args().skip(1).collect();
     let config = Config::load()?;
     let shift_mode = is_shift_binary();

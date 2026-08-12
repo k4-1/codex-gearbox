@@ -117,10 +117,10 @@ shift hook                 serve the desktop hook protocol
 ```
 
 Keep plugin hook command names, README examples, cross-platform CI builds, and
-Windows variants synchronized. The release workflow publishes source archives
-and notes only; do not assume downloadable binary assets exist. App Server
-WebSocket behavior is experimental; link to the relevant official OpenAI
-documentation when changing protocol methods.
+Windows variants synchronized. Tagged releases also need matching assets from
+`.github/workflows/release-assets.yml`; the updater fails closed when a platform
+asset or digest is missing. App Server WebSocket behavior is experimental; link
+to the relevant official OpenAI documentation when changing protocol methods.
 
 ## 7. Handoff format
 
