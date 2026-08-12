@@ -1,6 +1,6 @@
 {
   "name": "codex-gearbox",
-  "version": "0.1.0+codex.20260812142948",
+  "version": "0.1.0+codex.20260812144543",
   "description": "Advises the best Codex model and reasoning effort before desktop prompts run.",
   "author": {
     "name": "Codex Gearbox contributors"
@@ -21,6 +21,9 @@
     "capabilities": [
       "Advisory"
     ],
+    "composerIcon": "./assets/gear-shift.webp",
+    "logo": "./assets/gear-shift.webp",
+    "logoDark": "./assets/gear-shift.webp",
     "defaultPrompt": [
       "Explain which Codex model fits my next task."
     ]
