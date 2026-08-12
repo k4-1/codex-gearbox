@@ -1,6 +1,6 @@
 {
   "name": "codex-gearbox",
-  "version": "0.1.0+codex.20260810121707",
+  "version": "0.1.0+codex.20260812142948",
   "description": "Advises the best Codex model and reasoning effort before desktop prompts run.",
   "author": {
     "name": "Codex Gearbox contributors"
@@ -15,7 +15,7 @@
   "interface": {
     "displayName": "Codex Gearbox",
     "shortDescription": "Model and effort advisor for Codex desktop.",
-    "longDescription": "Checks each desktop prompt with the local Codex Gearbox router and pauses when another model is a better fit.",
+    "longDescription": "Checks each desktop prompt with the local Codex Gearbox router and advises when another model is a better fit.",
     "developerName": "Codex Gearbox contributors",
     "category": "Productivity",
     "capabilities": [

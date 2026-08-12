@@ -7,7 +7,7 @@ It has two modes:
 | Surface | Mode | Behavior |
 | --- | --- | --- |
 | Codex CLI | Autopilot | Routes `turn/start` before execution and injects the model and effort. |
-| Codex desktop | Advisor | Recommends a route and pauses when the selected model does not match. |
+| Codex desktop | Advisor | Recommends a route while preserving the selected model and effort. |
 
 > [!WARNING]
 > Autopilot is alpha software. It uses Codex App Server's experimental WebSocket transport. If the proxy cannot start, Gearbox warns and launches normal Codex.
@@ -73,9 +73,8 @@ codex plugin add codex-gearbox@personal
 
 In Codex desktop, the plugin's `UserPromptSubmit` hook runs `env shift hook` so
 the `shift` shell builtin cannot shadow the installed helper. Current hooks
-cannot change model or effort, so Advisor mode blocks a mismatched model with a
-recommendation; select it and resend. Correctly routed prompts continue
-immediately.
+cannot change model or effort, so Advisor mode displays a recommendation while
+every prompt continues with the user's selected settings.
 
 ## Configuration
 

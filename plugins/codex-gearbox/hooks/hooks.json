@@ -6,8 +6,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "env shift hook",
-            "commandWindows": "shift.exe hook",
+            "command": "/bin/sh -c 'for bin in \"$HOME/.local/bin/shift\" \"$HOME/.cargo/bin/shift\"; do if [ -x \"$bin\" ]; then exec \"$bin\" hook; fi; done; exit 127'",
+            "commandWindows": "cmd.exe /d /c \"%USERPROFILE%\\.local\\bin\\shift.exe hook\"",
             "timeout": 20,
             "statusMessage": "Selecting a Codex gear"
           }
