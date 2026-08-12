@@ -37,8 +37,10 @@ Ensure `$HOME/.local/bin` is on `PATH` for both your shell and the ChatGPT deskt
 After installation, Gearbox checks the pinned GitHub release channel in the
 background once per day. If a newer matching binary is available, it downloads
 it, verifies the release asset digest, and uses it on the next invocation. Set
-`CODEX_GEARBOX_DISABLE_UPDATE=1` to disable this behavior. Plugin manifest,
-hook, and skill changes still require refreshing the installed plugin.
+`CODEX_GEARBOX_DISABLE_UPDATE=1` to disable this behavior. Routing and hook
+behavior lives in the binary, so normal releases reach installed plugins
+automatically. Plugin manifest and other plugin-file changes require refreshing
+the Git marketplace snapshot.
 
 ### CLI Autopilot
 
@@ -64,10 +66,10 @@ shift report
 
 ### Desktop Advisor plugin
 
-Add this repository's local marketplace, install the plugin, and start a new Codex task:
+Add the GitHub marketplace, install the plugin, and start a new Codex task:
 
 ```bash
-codex plugin marketplace add "$(pwd)"
+codex plugin marketplace add k4-1/codex-gearbox --ref main
 codex plugin add codex-gearbox@personal
 ```
 
@@ -75,6 +77,15 @@ In Codex desktop, the plugin's `UserPromptSubmit` hook runs `env shift hook` so
 the `shift` shell builtin cannot shadow the installed helper. Current hooks
 cannot change model or effort, so Advisor mode displays a recommendation while
 every prompt continues with the user's selected settings.
+
+The marketplace points to this repository's `main` branch. To refresh cached
+plugin files manually:
+
+```bash
+codex plugin marketplace upgrade personal
+codex plugin remove codex-gearbox@personal
+codex plugin add codex-gearbox@personal
+```
 
 ## Configuration
 

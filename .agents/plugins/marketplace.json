@@ -7,8 +7,10 @@
     {
       "name": "codex-gearbox",
       "source": {
-        "source": "local",
-        "path": "./plugins/codex-gearbox"
+        "source": "git-subdir",
+        "url": "https://github.com/k4-1/codex-gearbox.git",
+        "path": "./plugins/codex-gearbox",
+        "ref": "main"
       },
       "policy": {
         "installation": "AVAILABLE",
