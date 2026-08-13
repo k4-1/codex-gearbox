@@ -1,27 +1,143 @@
 # Codex Gearbox
 
-Codex Gearbox chooses a Codex model and reasoning effort from the task in front of you.
+<p align="center">
+  <img src="plugins/codex-gearbox/assets/gear-shift.webp" alt="Codex Gearbox icon" width="180">
+</p>
 
-It has two modes:
+The right Codex model depends on the work, not on your muscle memory.
+
+You ask Codex to rename a variable. A fast model with low effort is enough. A
+few minutes later you are investigating an authentication failure, comparing
+architecture choices, or touching production data. That work needs more
+reasoning, more verification, and a higher safety floor. Manually changing the
+model for every turn is its own small chore.
+
+Codex Gearbox makes that choice for you. It reads the task, checks the models
+and account state that Codex actually exposes, and selects a model and
+reasoning effort that fit the work in front of you.
+
+> [!WARNING]
+> Autopilot is alpha software. It uses Codex App Server's experimental WebSocket transport. If the proxy cannot start, Gearbox warns and launches normal Codex.
+
+## Before and after
+
+Without Gearbox, every task starts with the same question: “Which model should
+I use?” You either spend time choosing or leave the same expensive setting on
+for work that does not need it.
+
+With Gearbox, the route follows the task:
+
+| Task shape | Typical route | Why |
+| --- | --- | --- |
+| Clear, focused change | Luna + low effort | Little ambiguity and a small reasoning surface |
+| Multi-step repository work | Terra + medium effort | Some planning, files, or tools are involved |
+| Architecture or debugging | Terra/Sol + medium or high effort | The task needs deeper analysis or tradeoffs |
+| Security, credentials, production, or irreversible work | Sol + high effort minimum | Risk takes priority over conservation |
+
+These are the default preferences, not hard-coded promises. Available models,
+your configuration, rate limits, and manual choices still win.
+
+## How it works
+
+Gearbox follows one short path for each prompt:
+
+```text
+prompt
+  ↓
+local task scoring
+  ↓
+account + plan + rate limits + available models
+  ↓
+optional Luna classification for eligible ambiguous work
+  ↓
+deterministic policy
+  ↓
+model + reasoning effort
+```
+
+The important part is that Luna advises; policy decides. A judge cannot bypass
+model availability, rate limits, effort caps, risk floors, or a manual model
+selection.
+
+### 1. Read the task
+
+The CLI proxy reads the text inputs in `turn/start`. The desktop plugin receives
+the prompt through `UserPromptSubmit`. Gearbox does not need the whole
+conversation to make its first decision, and it never treats prompt length as
+the only signal.
+
+### 2. Score the work
+
+Fast local rules classify six useful signals, each from 0 to 2:
+
+| Signal | Question |
+| --- | --- |
+| Ambiguity | Is the request underspecified or conflicting? |
+| Scope | How broad or multi-part is the change? |
+| Reasoning depth | Does it need diagnosis, design, or tradeoff analysis? |
+| Tool breadth | Does it span repositories, APIs, browsers, or other systems? |
+| Verification burden | How much testing, review, or evidence is needed? |
+| Risk | Could it affect security, data, money, production, or irreversible state? |
+
+The result becomes a route role: `fast`, `balanced`, or `deep`, plus an effort
+level from `low` through `xhigh`.
+
+### 3. Add live context
+
+When Codex App Server is available, Gearbox reads the account class, plan,
+rate-limit usage, and available models. This prevents a good-looking route from
+choosing a model that is unavailable or spending a scarce rate window
+carelessly.
+
+On subscribed plans, an ambiguous or near-threshold task may receive a fresh
+GPT-5.6 Luna Medium classification when Luna is available, usage is in the
+normal band, and judging is enabled. Free plans never invoke the judge. API-key
+judging is opt-in.
+
+The judge runs as a read-only, tool-free, time-limited classification. If it
+times out, returns an unusable result, or cannot be started, Gearbox keeps the
+local route.
+
+### 4. Apply policy
+
+The final route applies the boring rules that should never be left to a model:
+
+- use an available model from the configured preference list;
+- clamp effort to what that model supports and to the configured minimum and maximum;
+- conserve non-risky balanced work when the rate band is high;
+- keep risky work at high effort or above;
+- inherit a previous route for short, low-risk follow-ups when appropriate;
+- preserve an explicit model or effort selection.
+
+### 5. Continue normally
+
+CLI Autopilot injects the selected model and effort into the Codex turn. Desktop
+Advisor shows the recommendation but leaves the selected settings active because
+the current hook API cannot mutate them. If routing infrastructure fails, the
+normal Codex path remains available.
+
+## What data is used
+
+| Data | Used for | Stored? |
+| --- | --- | --- |
+| Current prompt text | Local scoring and, only when eligible, judge classification | No |
+| Account and plan state | Judge eligibility and plan policy | No |
+| Rate-limit usage | Conservation and critical routing bands | No |
+| Available model metadata | Availability and supported-effort checks | No |
+| `gearbox.json` | Local routing preferences and limits | You control it |
+| Optional JSONL metrics | Aggregate routing reports | Yes, without prompt text |
+
+Optional metrics contain only routing metadata: selected model, effort, role,
+source, confidence, account class, rate band, available-model count, and a
+timestamp. Gearbox does not store prompts, judge text, credentials, bearer
+tokens, or API keys.
+
+## Two ways to use it
 
 | Surface | Mode | Behavior |
 | --- | --- | --- |
 | Codex CLI | Autopilot | Routes `turn/start` before execution and injects the model and effort. |
 | Codex desktop | Advisor | Recommends a route while preserving the selected model and effort. |
-
-> [!WARNING]
-> Autopilot is alpha software. It uses Codex App Server's experimental WebSocket transport. If the proxy cannot start, Gearbox warns and launches normal Codex.
-
-## How routing works
-
-Clear prompts use deterministic local rules. On subscribed ChatGPT plans,
-ambiguous or near-threshold prompts may be classified by a fresh GPT-5.6 Luna
-Medium judge when Luna is available and account usage is healthy. Free accounts
-never call the judge, and API-key judging is opt-in. The judge returns scores and
-confidence; deterministic policy always makes the final choice and applies model
-availability, rate limits, safety floors, user caps, and manual overrides.
-
-Gearbox does not store prompts. Optional local JSONL metrics contain only the selected model, effort, routing source, confidence, plan class, rate band, and timestamp.
 
 ## Install from source
 
