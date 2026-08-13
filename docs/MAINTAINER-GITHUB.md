@@ -42,7 +42,7 @@ change in an issue or release note afterward.
    Codex plugin manifest changes. The plugin version matches the release
    version, so marketplace installs can detect the update.
 3. Review the release PR and generated notes, then merge it when ready.
-4. The workflow creates and pushes the annotated `vX.Y.Z` tag automatically
+4. The workflow creates and pushes the annotated `codex-gearbox-vX.Y.Z` tag automatically
    after the release PR is merged.
 
 5. The tag-triggered release-assets workflow builds all command binaries for Linux,
