@@ -1,6 +1,6 @@
 {
   "name": "codex-gearbox",
-  "version": "0.4.0+codex.20260813145405",
+  "version": "0.4.1",
   "description": "Advises the best Codex model and reasoning effort before desktop prompts run.",
   "author": {
     "name": "Codex Gearbox contributors"
