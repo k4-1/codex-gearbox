@@ -3,7 +3,7 @@ name: Release assets
 on:
   push:
     tags:
-      - "v*"
+      - "codex-gearbox-v*"
   workflow_dispatch:
     inputs:
       tag:
