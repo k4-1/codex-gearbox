@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to rebuild and upload
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -23,6 +29,9 @@ jobs:
           - os: windows-latest
             target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.os }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -31,8 +40,6 @@ jobs:
       - run: cargo build --release --locked --target ${{ matrix.target }}
       - name: Wait for GitHub release
         shell: bash
-        env:
-          TAG: ${{ github.ref_name }}
         run: |
           for attempt in $(seq 1 12); do
             if gh release view "$TAG" >/dev/null 2>&1; then
@@ -45,7 +52,6 @@ jobs:
         shell: bash
         env:
           TARGET: ${{ matrix.target }}
-          TAG: ${{ github.ref_name }}
         run: |
           if [ "$RUNNER_OS" = "Windows" ]; then
             extension=".exe"
