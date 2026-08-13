@@ -258,7 +258,10 @@ fn target_triple() -> Option<&'static str> {
 }
 
 fn parse_version(value: &str) -> Result<Version> {
-    let value = value.strip_prefix('v').unwrap_or(value);
+    let value = value
+        .strip_prefix("codex-gearbox-v")
+        .or_else(|| value.strip_prefix('v'))
+        .unwrap_or(value);
     let parts = value
         .split('.')
         .map(str::parse::<u64>)
@@ -404,7 +407,12 @@ mod tests {
     #[test]
     fn parses_release_versions_and_rejects_suffixes() {
         assert_eq!(parse_version("v1.2.3").unwrap(), Version([1, 2, 3]));
+        assert_eq!(
+            parse_version("codex-gearbox-v1.2.3").unwrap(),
+            Version([1, 2, 3])
+        );
         assert!(parse_version("1.2").is_err());
+        assert!(parse_version("other-v1.2.3").is_err());
         assert!(parse_version("1.2.3-rc1").is_err());
     }
 
