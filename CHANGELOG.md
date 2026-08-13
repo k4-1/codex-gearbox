@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.4.1...codex-gearbox-v0.4.2) (2026-08-13)
+
+
+### 🐛 Fixes
+
+* **update:** accept component release tags ([2b2cbb9](https://github.com/k4-1/codex-gearbox/commit/2b2cbb9bc6f0de741da9d26afa202331de921a44))
+
 ## [0.4.1](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.4.0...codex-gearbox-v0.4.1) (2026-08-13)
 
 
