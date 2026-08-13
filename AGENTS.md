@@ -40,7 +40,8 @@ specific.
 5. Keep `src/routing.rs` pure where possible. Use traits only at real external
    boundaries; do not add abstractions for one implementation (YAGNI/KISS).
 6. Preserve both CLI contracts: `codex-gearbox` launches Codex and reports its
-   version; `shift route|account|report|hook` provides utilities.
+   version; `gearbox-shift route|account|report|hook` provides utilities.
+   Keep `shift` as a compatibility alias for hooks and scripts.
 7. Prefer feature-local changes and small diffs. Do not reorganize the project
    or add dependencies without a concrete need and verification.
 8. Every routing, protocol, security, privacy, or CLI change needs a focused
@@ -75,8 +76,8 @@ cargo build --release --locked
 ```
 
 For plugin changes, also run the official plugin validator on
-`plugins/codex-gearbox/`. Before release, verify both binaries and the desktop
-hook from a clean installation path.
+`plugins/codex-gearbox/`. Before release, verify all command binaries and the
+desktop hook from a clean installation path.
 
 Do not report a change complete while a required check is failing. If a check
 cannot run because an external service or tool is unavailable, state that

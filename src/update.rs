@@ -224,7 +224,7 @@ fn update_root() -> Result<PathBuf> {
 
 fn binary_name(path: &Path) -> Option<String> {
     let name = path.file_stem()?.to_str()?;
-    matches!(name, "shift" | "codex-gearbox").then(|| name.to_owned())
+    matches!(name, "shift" | "gearbox-shift" | "codex-gearbox").then(|| name.to_owned())
 }
 
 fn binary_filename(binary: &str) -> String {
@@ -418,6 +418,10 @@ mod tests {
     #[test]
     fn rejects_unknown_binary_names() {
         assert_eq!(binary_name(Path::new("/tmp/shift")), Some("shift".into()));
+        assert_eq!(
+            binary_name(Path::new("/tmp/gearbox-shift")),
+            Some("gearbox-shift".into())
+        );
         assert_eq!(binary_name(Path::new("/tmp/other")), None);
     }
 }

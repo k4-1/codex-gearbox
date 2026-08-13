@@ -43,7 +43,7 @@ change in an issue or release note afterward.
 4. The workflow creates and pushes the annotated `vX.Y.Z` tag automatically
    after the release PR is merged.
 
-5. The tag-triggered release-assets workflow builds both binaries for Linux,
+5. The tag-triggered release-assets workflow builds all command binaries for Linux,
    Intel and Apple Silicon macOS, and Windows, then attaches them to the GitHub
    release. The updater selects the matching asset by target triple.
 6. Release-please generates categorized release notes using

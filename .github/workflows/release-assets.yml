@@ -54,7 +54,9 @@ jobs:
           fi
           cp "target/$TARGET/release/codex-gearbox$extension" "codex-gearbox-$TARGET$extension"
           cp "target/$TARGET/release/shift$extension" "shift-$TARGET$extension"
+          cp "target/$TARGET/release/gearbox-shift$extension" "gearbox-shift-$TARGET$extension"
           gh release upload "$TAG" \
             "codex-gearbox-$TARGET$extension" \
             "shift-$TARGET$extension" \
+            "gearbox-shift-$TARGET$extension" \
             --clobber

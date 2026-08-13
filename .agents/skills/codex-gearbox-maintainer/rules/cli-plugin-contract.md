@@ -10,15 +10,16 @@ rename can silently disable desktop routing or break scripts.
 ```text
 codex-gearbox              launch Codex Autopilot
 codex-gearbox --version    print the product version
-shift route <prompt>       preview a route
-shift account              inspect account/model/rate data
-shift report               inspect aggregate metrics
-shift hook                 handle UserPromptSubmit JSON
+gearbox-shift route <prompt> preview a route
+gearbox-shift account        inspect account/model/rate data
+gearbox-shift report         inspect aggregate metrics
+gearbox-shift hook           handle UserPromptSubmit JSON
+env shift ...                legacy shell-safe alias
 ```
 
 ## Rules
 
-- Keep the two executable entry points installed by Cargo and synchronized.
+- Keep all executable entry points installed by Cargo and synchronized.
 - Preserve the native Codex arguments passed through the main launcher.
 - When changing a command, update `src/main.rs`, `src/shift.rs`, README
   examples, plugin hook commands, Windows variants, and release packaging.

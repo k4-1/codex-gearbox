@@ -23,7 +23,7 @@ async fn main() -> Result<()> {
         Some("route") => {
             args.remove(0);
             if args.is_empty() {
-                bail!("usage: shift route <prompt>");
+                bail!("usage: gearbox-shift route <prompt>");
             }
             let route = route_live(&config, &args.join(" ")).await;
             println!("{}", serde_json::to_string_pretty(&route)?);
@@ -47,7 +47,9 @@ async fn main() -> Result<()> {
         }
         Some("report") => println!("{}", serde_json::to_string_pretty(&metrics::report()?)?),
         Some("--help" | "-h" | "help") if shift_mode => print_shift_help(),
-        Some("--version" | "-V") if shift_mode => println!("shift {}", env!("CARGO_PKG_VERSION")),
+        Some("--version" | "-V") if shift_mode => {
+            println!("gearbox-shift {}", env!("CARGO_PKG_VERSION"))
+        }
         Some("--help" | "-h" | "help") => print_help(),
         Some("--version" | "-V") => println!("codex-gearbox {}", env!("CARGO_PKG_VERSION")),
         Some("run") if !shift_mode => {
@@ -56,7 +58,7 @@ async fn main() -> Result<()> {
         }
         _ if shift_mode => {
             print_shift_help();
-            bail!("usage: shift <route|account|report|hook>");
+            bail!("usage: gearbox-shift <route|account|report|hook>");
         }
         _ => std::process::exit(
             proxy::run(config, args)
@@ -76,20 +78,35 @@ fn is_shift_binary() -> bool {
                 .map(ToOwned::to_owned)
         })
         .and_then(|name| name.into_string().ok())
-        .is_some_and(|name| name == "shift")
+        .is_some_and(|name| is_shift_binary_name(&name))
+}
+
+fn is_shift_binary_name(name: &str) -> bool {
+    matches!(name, "shift" | "gearbox-shift")
 }
 
 fn print_help() {
     println!(
         "Codex Gearbox — plan-aware model and effort routing\n\n\
          Usage:\n  codex-gearbox [codex arguments]\n  codex-gearbox --version\n\n\
-         Utilities:\n  shift route <prompt>\n  shift hook\n  shift account\n  shift report"
+         Utilities:\n  gearbox-shift route <prompt>\n  gearbox-shift hook\n  gearbox-shift account\n  gearbox-shift report"
     );
 }
 
 fn print_shift_help() {
     println!(
         "Codex Gearbox utilities\n\n\
-         Usage:\n  shift route <prompt>\n  shift hook\n  shift account\n  shift report"
+         Usage:\n  gearbox-shift route <prompt>\n  gearbox-shift hook\n  gearbox-shift account\n  gearbox-shift report\n\n\
+         `shift` remains available for scripts; use `env shift` in POSIX shells."
     );
+}
+
+#[cfg(test)]
+mod tests {
+    use super::is_shift_binary_name;
+
+    #[test]
+    fn identifies_the_non_conflicting_shift_alias() {
+        assert!(is_shift_binary_name("gearbox-shift"));
+    }
 }

@@ -105,15 +105,16 @@ When uncertain, fail closed and fall back to deterministic routing.
 
 ## 6. Release and compatibility
 
-The two executable contracts are intentional:
+The launcher and utility contracts are intentional:
 
 ```text
 codex-gearbox              launch Codex Autopilot
 codex-gearbox --version    print the product version
-shift route <prompt>       inspect a route
-shift account              inspect live account/model state
-shift report               inspect aggregate local metrics
-shift hook                 serve the desktop hook protocol
+gearbox-shift route <prompt> inspect a route
+gearbox-shift account        inspect live account/model state
+gearbox-shift report         inspect aggregate local metrics
+gearbox-shift hook           serve the desktop hook protocol
+env shift ...                legacy shell-safe alias
 ```
 
 Keep plugin hook command names, README examples, cross-platform CI builds, and

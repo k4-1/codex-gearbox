@@ -175,10 +175,13 @@ codex-gearbox --version
 All unrecognized arguments pass through to Codex. Other commands:
 
 ```bash
-shift route "Investigate this authentication failure"
-shift account
-shift report
+gearbox-shift route "Investigate this authentication failure"
+gearbox-shift account
+gearbox-shift report
 ```
+
+`gearbox-shift` avoids the POSIX shell `shift` builtin. The `shift` binary is
+kept for existing scripts and hooks; invoke it as `env shift …` from a shell.
 
 ### Desktop Advisor plugin
 
