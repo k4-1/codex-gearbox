@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.4.0...codex-gearbox-v0.4.1) (2026-08-13)
+
+
+### 🐛 Fixes
+
+* **plugin:** align marketplace version ([1362bbb](https://github.com/k4-1/codex-gearbox/commit/1362bbb5ab92acdaaa05073120d01faebe241705))
+
 ## [0.4.0](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.3.0...codex-gearbox-v0.4.0) (2026-08-13)
 
 
