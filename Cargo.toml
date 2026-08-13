@@ -16,6 +16,10 @@ path = "src/main.rs"
 name = "shift"
 path = "src/shift.rs"
 
+[[bin]]
+name = "gearbox-shift"
+path = "src/gearbox_shift.rs"
+
 [dependencies]
 anyhow = "1"
 directories = "6"
