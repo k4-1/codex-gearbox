@@ -11,6 +11,10 @@
     { "type": "docs", "section": "📚 Documentation" }
   ],
   "packages": {
-    ".": {}
+    ".": {
+      "extra-files": [
+        "plugins/codex-gearbox/.codex-plugin/plugin.json"
+      ]
+    }
   }
 }

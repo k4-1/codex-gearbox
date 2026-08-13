@@ -38,7 +38,9 @@ change in an issue or release note afterward.
 
 1. Merge normal Conventional Commit pull requests into a green `main`.
 2. The release workflow opens or updates a release PR with the calculated
-   semantic version, `Cargo.toml`, `Cargo.lock`, and `CHANGELOG.md` changes.
+   semantic version, `Cargo.toml`, `Cargo.lock`, `CHANGELOG.md`, and the
+   Codex plugin manifest changes. The plugin version matches the release
+   version, so marketplace installs can detect the update.
 3. Review the release PR and generated notes, then merge it when ready.
 4. The workflow creates and pushes the annotated `vX.Y.Z` tag automatically
    after the release PR is merged.
