@@ -9,5 +9,8 @@
     { "type": "perf", "section": "⚡ Performance" },
     { "type": "refactor", "section": "🛠 Maintenance" },
     { "type": "docs", "section": "📚 Documentation" }
-  ]
+  ],
+  "packages": {
+    ".": {}
+  }
 }
