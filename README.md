@@ -183,6 +183,25 @@ gearbox-shift report
 `gearbox-shift` avoids the POSIX shell `shift` builtin. The `shift` binary is
 kept for existing scripts and hooks; invoke it as `env shift …` from a shell.
 
+### Package-manager install
+
+Homebrew users on macOS or Linux can install the latest native CLI with:
+
+```bash
+brew tap k4-1/codex-gearbox https://github.com/k4-1/codex-gearbox
+brew install k4-1/codex-gearbox/codex-gearbox
+```
+
+Windows users can install it from the repository's Scoop bucket:
+
+```powershell
+scoop bucket add codex-gearbox https://github.com/k4-1/codex-gearbox
+scoop install codex-gearbox
+```
+
+Both package manifests are refreshed after every GitHub release. The desktop
+plugin remains optional; CLI Autopilot is enabled by launching `codex-gearbox`.
+
 ### Desktop Advisor plugin
 
 Add the GitHub marketplace, install the plugin, and start a new Codex task:
