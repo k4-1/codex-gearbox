@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.5.0...codex-gearbox-v0.5.1) (2026-08-14)
+
+
+### 🐛 Fixes
+
+* **release:** build assets after publishing ([8f6220f](https://github.com/k4-1/codex-gearbox/commit/8f6220f64c59c257d26c2e192795636a57dc58c9))
+
 ## [0.5.0](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.4.2...codex-gearbox-v0.5.0) (2026-08-14)
 
 
