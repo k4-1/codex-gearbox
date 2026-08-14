@@ -1,12 +1,12 @@
 {
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Plan-aware Codex model and effort router",
   "homepage": "https://github.com/k4-1/codex-gearbox",
   "license": "MIT",
   "architecture": {
     "64bit": {
-      "url": "https://github.com/k4-1/codex-gearbox/releases/download/codex-gearbox-v0.5.1/codex-gearbox-x86_64-pc-windows-msvc.exe",
-      "hash": "048653f99bbe392fa297a84edc1ad809b6e01f3a8048217773e5a7c1fb588e0a"
+      "url": "https://github.com/k4-1/codex-gearbox/releases/download/codex-gearbox-v0.6.0/codex-gearbox-x86_64-pc-windows-msvc.exe",
+      "hash": "90114de5cf85aedd219a76ba2b7c8737def91ead3a41ca9a602fce9dcc264b3f"
     }
   },
   "bin": [
