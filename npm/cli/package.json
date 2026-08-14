@@ -1,0 +1,18 @@
+{
+  "name": "codex-gearbox",
+  "version": "0.0.0-development",
+  "description": "Plan-aware Codex model and effort router",
+  "license": "MIT",
+  "repository": "https://github.com/k4-1/codex-gearbox.git",
+  "bin": {
+    "codex-gearbox": "bin/codex-gearbox.js",
+    "gearbox-shift": "bin/gearbox-shift.js",
+    "shift": "bin/shift.js"
+  },
+  "files": [
+    "bin"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

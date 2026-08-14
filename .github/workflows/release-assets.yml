@@ -79,6 +79,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       TAG: ${{ inputs.tag || github.event.release.tag_name }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -95,3 +96,13 @@ jobs:
           git add Formula/codex-gearbox.rb bucket/codex-gearbox.json
           git commit -m "chore(packaging): update $TAG"
           git push
+      - name: Publish npm packages
+        if: ${{ env.NPM_TOKEN != '' }}
+        uses: actions/setup-node@v4
+        with:
+          registry-url: https://registry.npmjs.org
+      - name: Upload npm packages
+        if: ${{ env.NPM_TOKEN != '' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ env.NPM_TOKEN }}
+        run: node scripts/publish_npm_packages.mjs "$TAG"

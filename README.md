@@ -199,8 +199,15 @@ scoop bucket add codex-gearbox https://github.com/k4-1/codex-gearbox
 scoop install codex-gearbox
 ```
 
-Both package manifests are refreshed after every GitHub release. The desktop
-plugin remains optional; CLI Autopilot is enabled by launching `codex-gearbox`.
+Node.js users can install the same native CLI on macOS, Linux, or Windows:
+
+```bash
+npm install -g codex-gearbox
+```
+
+Homebrew, Scoop, and npm packages are refreshed after every GitHub release.
+The desktop plugin remains optional; CLI Autopilot is enabled by launching
+`codex-gearbox`.
 
 ### Desktop Advisor plugin
 
