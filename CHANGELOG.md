@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.4.2...codex-gearbox-v0.5.0) (2026-08-14)
+
+
+### 🚀 New for users
+
+* **distribution:** add Homebrew and Scoop installs ([98843eb](https://github.com/k4-1/codex-gearbox/commit/98843eb7b4365976a2acd9493e2b89b7453e7774))
+
 ## [0.4.2](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.4.1...codex-gearbox-v0.4.2) (2026-08-13)
 
 
