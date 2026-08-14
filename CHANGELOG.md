@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.0](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.5.1...codex-gearbox-v0.6.0) (2026-08-14)
+
+
+### 🚀 New for users
+
+* **distribution:** publish npm installer ([0c29b75](https://github.com/k4-1/codex-gearbox/commit/0c29b7530c044c09fdb9dfa78b8c8f40bf87f815))
+* **distribution:** publish npm installer ([cce01bd](https://github.com/k4-1/codex-gearbox/commit/cce01bd5b5d49b3ac5e2691ffb961c0e9e6302b9))
+
 ## [0.5.1](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.5.0...codex-gearbox-v0.5.1) (2026-08-14)
 
 
