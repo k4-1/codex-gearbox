@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.6.0...codex-gearbox-v0.6.1) (2026-08-19)
+
+
+### 🐛 Fixes
+
+* **ci:** resolve release by explicit repository ([f4fe52d](https://github.com/k4-1/codex-gearbox/commit/f4fe52d8282fd001cd4a838302cd51b71892b5f4))
+
 ## [0.6.0](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.5.1...codex-gearbox-v0.6.0) (2026-08-14)
 
 
