@@ -18,11 +18,25 @@ use crate::{
     Config, Router,
     app_server::{ControlClient, ManagedServer, ServerSnapshot},
     metrics,
+    routing::exceeds_recommendation,
 };
 
 const TOKEN_ENV: &str = "CODEX_GEARBOX_REMOTE_TOKEN";
 
+#[derive(Debug, PartialEq, Eq)]
+struct SelectedSettings {
+    model: Option<String>,
+    effort: Option<String>,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+struct PendingOverride {
+    prompt: String,
+    selection: SelectedSettings,
+}
+
 pub async fn run(config: Config, codex_args: Vec<String>) -> Result<i32> {
+    let manually_pinned = args_pin_settings(&codex_args);
     let mut server = ManagedServer::start().await?;
     let mut control = match ControlClient::connect_with_retry(&server.url).await {
         Ok(client) => client,
@@ -49,6 +63,7 @@ pub async fn run(config: Config, codex_args: Vec<String>) -> Result<i32> {
             proxy_config,
             snapshot,
             control,
+            manually_pinned,
         )
         .await
     });
@@ -92,6 +107,7 @@ async fn serve_one(
     config: Config,
     snapshot: ServerSnapshot,
     control: Arc<Mutex<ControlClient>>,
+    manually_pinned: bool,
 ) -> Result<()> {
     let (stream, _) = listener.accept().await?;
     let expected_header = format!("Bearer {expected_token}");
@@ -111,7 +127,7 @@ async fn serve_one(
     })
     .await?;
     let (upstream, _) = connect_async(upstream_url).await?;
-    relay(client, upstream, config, snapshot, control).await
+    relay(client, upstream, config, snapshot, control, manually_pinned).await
 }
 
 async fn relay<Client, Upstream>(
@@ -120,13 +136,14 @@ async fn relay<Client, Upstream>(
     config: Config,
     snapshot: ServerSnapshot,
     control: Arc<Mutex<ControlClient>>,
+    mut manually_pinned: bool,
 ) -> Result<()>
 where
     Client: tokio::io::AsyncRead + tokio::io::AsyncWrite + Unpin,
     Upstream: tokio::io::AsyncRead + tokio::io::AsyncWrite + Unpin,
 {
-    let mut manually_pinned = false;
     let mut previous_route: Option<crate::RouteDecision> = None;
+    let mut pending_override: Option<PendingOverride> = None;
     loop {
         tokio::select! {
             incoming = client.next() => {
@@ -136,10 +153,12 @@ where
                     && let Ok(mut value) = serde_json::from_str::<Value>(text.as_str())
                 {
                     if value.get("method").and_then(Value::as_str) == Some("thread/settings/update") {
-                        manually_pinned = has_model_setting(&value);
+                        if let Some(pinned) = selected_setting_update(&value) {
+                            manually_pinned = pinned;
+                            pending_override = None;
+                        }
                     }
-                    if !manually_pinned
-                        && value.get("method").and_then(Value::as_str) == Some("turn/start")
+                    if value.get("method").and_then(Value::as_str) == Some("turn/start")
                         && let Some(prompt) = prompt_from_turn(&value)
                     {
                         let router = Router::new(
@@ -179,8 +198,34 @@ where
                             rules
                         };
                         previous_route = Some(route.clone());
-                        inject_route(&mut value, &route)?;
-                        if config.metrics {
+                        let selection = selected_settings(&value);
+                        if manually_pinned {
+                            if should_block_turn(
+                                &mut pending_override,
+                                prompt,
+                                selection,
+                                &config,
+                                &route,
+                            ) {
+                                let advice = format!(
+                                    "Gearbox recommends {} · {} ({}%, {}). Your selected settings are stronger than this task needs. Change them and resend, or resend once unchanged to proceed anyway.",
+                                    route.model, route.effort, route.confidence, route.reason
+                                );
+                                let Some(response) = blocked_turn_response(&value, &advice) else {
+                                    pending_override = None;
+                                    upstream.send(message).await?;
+                                    continue;
+                                };
+                                client.send(Message::Text(response.to_string().into())).await?;
+                                continue;
+                            }
+                        } else {
+                            pending_override = None;
+                        }
+                        if !manually_pinned {
+                            inject_route(&mut value, &route)?;
+                        }
+                        if config.metrics && !manually_pinned {
                             let _ = metrics::append(
                                 &route,
                                 snapshot.account_class,
@@ -194,8 +239,9 @@ where
                             "params": {
                                 "threadId": thread_id,
                                 "message": format!(
-                                    "Gearbox: {} · {} ({}, {}%) — {}",
-                                    route.model, route.effort, route.source, route.confidence, route.reason
+                                    "Gearbox: {} · {} ({}, {}%) — {}{}",
+                                    route.model, route.effort, route.source, route.confidence, route.reason,
+                                    if manually_pinned { "; using your selected settings" } else { "" }
                                 )
                             }
                         });
@@ -235,11 +281,82 @@ fn inject_route(value: &mut Value, route: &crate::RouteDecision) -> Result<()> {
     Ok(())
 }
 
-fn has_model_setting(value: &Value) -> bool {
-    value.pointer("/params/model").is_some()
-        || value.pointer("/params/effort").is_some()
-        || value.pointer("/params/settings/model").is_some()
-        || value.pointer("/params/settings/effort").is_some()
+fn selected_settings(value: &Value) -> SelectedSettings {
+    let selected = |direct, nested| {
+        value
+            .pointer(direct)
+            .or_else(|| value.pointer(nested))
+            .and_then(Value::as_str)
+            .map(str::to_owned)
+    };
+    SelectedSettings {
+        model: selected("/params/model", "/params/settings/model"),
+        effort: selected("/params/effort", "/params/settings/effort"),
+    }
+}
+
+fn selected_setting_update(value: &Value) -> Option<bool> {
+    let updates_selection = [
+        "/params/model",
+        "/params/effort",
+        "/params/settings/model",
+        "/params/settings/effort",
+    ]
+    .into_iter()
+    .any(|pointer| value.pointer(pointer).is_some());
+    if !updates_selection {
+        return None;
+    }
+    let selection = selected_settings(value);
+    Some(selection.model.is_some() || selection.effort.is_some())
+}
+
+fn args_pin_settings(args: &[String]) -> bool {
+    let pins_routing =
+        |value: &str| value.starts_with("model=") || value.starts_with("model_reasoning_effort=");
+    args.iter().enumerate().any(|(index, arg)| {
+        matches!(arg.as_str(), "-m" | "--model")
+            || arg.starts_with("--model=")
+            || arg.strip_prefix("--config=").is_some_and(pins_routing)
+            || matches!(arg.as_str(), "-c" | "--config")
+                && args.get(index + 1).is_some_and(|value| pins_routing(value))
+    })
+}
+
+fn blocked_turn_response(value: &Value, message: &str) -> Option<Value> {
+    Some(json!({
+        "id": value.get("id")?,
+        "error": {
+            "code": -32000,
+            "message": message
+        }
+    }))
+}
+
+fn should_block_turn(
+    pending_override: &mut Option<PendingOverride>,
+    prompt: String,
+    selection: SelectedSettings,
+    config: &Config,
+    route: &crate::RouteDecision,
+) -> bool {
+    if !exceeds_recommendation(
+        config,
+        selection.model.as_deref(),
+        selection.effort.as_deref(),
+        route,
+    ) {
+        *pending_override = None;
+        return false;
+    }
+    let pending = PendingOverride { prompt, selection };
+    if pending_override.as_ref() == Some(&pending) {
+        *pending_override = None;
+        false
+    } else {
+        *pending_override = Some(pending);
+        true
+    }
 }
 
 fn should_inherit(prompt: &str, route: &crate::RouteDecision) -> bool {
@@ -303,5 +420,78 @@ mod tests {
             "Now delete the production database",
             &router.deterministic("Now delete the production database")
         ));
+    }
+
+    #[test]
+    fn blocks_once_then_allows_the_exact_cli_retry() {
+        let config = Config::default();
+        let route = Router::new(config.clone(), vec![], crate::RateBand::Normal)
+            .deterministic("Rename the variable");
+        let mut pending = None;
+        let first = should_block_turn(
+            &mut pending,
+            "Rename the variable".into(),
+            SelectedSettings {
+                model: Some("gpt-5.6-sol".into()),
+                effort: Some("high".into()),
+            },
+            &config,
+            &route,
+        );
+        let second = should_block_turn(
+            &mut pending,
+            "Rename the variable".into(),
+            SelectedSettings {
+                model: Some("gpt-5.6-sol".into()),
+                effort: Some("high".into()),
+            },
+            &config,
+            &route,
+        );
+        assert_eq!((first, second), (true, false));
+    }
+
+    #[test]
+    fn changed_cli_prompt_requires_a_new_override() {
+        let config = Config::default();
+        let route = Router::new(config.clone(), vec![], crate::RateBand::Normal)
+            .deterministic("Rename the variable");
+        let mut pending = Some(PendingOverride {
+            prompt: "Rename the variable".into(),
+            selection: SelectedSettings {
+                model: Some("gpt-5.6-sol".into()),
+                effort: Some("high".into()),
+            },
+        });
+        assert!(should_block_turn(
+            &mut pending,
+            "Rename another variable".into(),
+            SelectedSettings {
+                model: Some("gpt-5.6-sol".into()),
+                effort: Some("high".into()),
+            },
+            &config,
+            &route,
+        ));
+    }
+
+    #[test]
+    fn detects_cli_model_flags_as_manual_pins() {
+        assert!(args_pin_settings(&[
+            "--config=model_reasoning_effort=high".into()
+        ]));
+    }
+
+    #[test]
+    fn unrelated_thread_update_does_not_change_manual_pin() {
+        assert_eq!(
+            selected_setting_update(&json!({ "params": { "cwd": "/tmp" } })),
+            None
+        );
+    }
+
+    #[test]
+    fn malformed_turn_without_id_cannot_be_blocked() {
+        assert!(blocked_turn_response(&json!({ "method": "turn/start" }), "pause").is_none());
     }
 }

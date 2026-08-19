@@ -33,7 +33,7 @@ async fn main() -> Result<()> {
             io::stdin().read_to_string(&mut input)?;
             let parsed = hook::parse(&input)?;
             let route = route_live(&config, &parsed.prompt).await;
-            println!("{}", hook::output(&parsed, &route));
+            println!("{}", hook::output(&parsed, &route, &config));
         }
         Some("account") => {
             let mut server = ManagedServer::start().await?;

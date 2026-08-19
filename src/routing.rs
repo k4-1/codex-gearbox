@@ -94,7 +94,7 @@ impl fmt::Display for Effort {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Role {
     Fast,
@@ -191,6 +191,48 @@ pub struct RouteDecision {
     pub source: String,
     pub reason: String,
     pub scores: FeatureScores,
+}
+
+pub fn exceeds_recommendation(
+    config: &Config,
+    selected_model: Option<&str>,
+    selected_effort: Option<&str>,
+    route: &RouteDecision,
+) -> bool {
+    let model_exceeds = selected_model.is_some_and(|model| {
+        canonical_model(model) != canonical_model(&route.model)
+            && preferred_role(config, model).is_some_and(|role| role > route.role)
+    });
+    let effort_exceeds = selected_effort
+        .and_then(Effort::from_str)
+        .is_some_and(|effort| effort > route.effort);
+    model_exceeds || effort_exceeds
+}
+
+fn canonical_model(model: &str) -> &str {
+    if model == "gpt-5.6" {
+        "gpt-5.6-sol"
+    } else {
+        model
+    }
+}
+
+fn preferred_role(config: &Config, model: &str) -> Option<Role> {
+    let model = canonical_model(model);
+    [
+        (Role::Deep, &config.deep_models),
+        (Role::Balanced, &config.balanced_models),
+        (Role::Fast, &config.fast_models),
+    ]
+    .into_iter()
+    .filter_map(|(role, models)| {
+        models
+            .iter()
+            .position(|candidate| canonical_model(candidate) == model)
+            .map(|position| (position, role))
+    })
+    .min_by_key(|(position, _)| *position)
+    .map(|(_, role)| role)
 }
 
 pub struct Router {
@@ -573,5 +615,40 @@ mod tests {
         let route = Router::new(config, vec![], RateBand::Normal)
             .deterministic("Delete production credentials and reset authentication");
         assert!(route.effort >= Effort::High);
+    }
+
+    #[test]
+    fn stronger_model_exceeds_recommendation() {
+        let route = router().deterministic("Rename the variable");
+        assert!(exceeds_recommendation(
+            &Config::default(),
+            Some("gpt-5.6-sol"),
+            Some("low"),
+            &route
+        ));
+    }
+
+    #[test]
+    fn higher_effort_exceeds_recommendation() {
+        let route = router().deterministic("Rename the variable");
+        assert!(exceeds_recommendation(
+            &Config::default(),
+            Some(&route.model),
+            Some("high"),
+            &route
+        ));
+    }
+
+    #[test]
+    fn weaker_selection_does_not_exceed_recommendation() {
+        let route = router().deterministic(
+            "Investigate the authentication vulnerability and verify the production fix",
+        );
+        assert!(!exceeds_recommendation(
+            &Config::default(),
+            Some("gpt-5.6-luna"),
+            Some("low"),
+            &route
+        ));
     }
 }

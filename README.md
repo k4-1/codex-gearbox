@@ -109,35 +109,38 @@ The final route applies the boring rules that should never be left to a model:
 - inherit a previous route for short, low-risk follow-ups when appropriate;
 - preserve an explicit model or effort selection.
 
-### 5. Continue normally
+### 5. Continue or override
 
-CLI Autopilot injects the selected model and effort into the Codex turn. Desktop
-Advisor shows the recommendation but leaves the selected settings active because
-the current hook API cannot mutate them. If routing infrastructure fails, the
-normal Codex path remains available.
+CLI Autopilot injects the selected model and effort when settings are not pinned.
+If a manually pinned model or effort is stronger than the recommendation, the
+first submission pauses; resending the same prompt unchanged proceeds once with
+the pinned settings. Codex desktop uses the same one-shot gate for stronger model
+choices. Changing the settings and resending also continues normally. If routing
+or override state is unavailable, the normal Codex path remains available.
 
 ## What data is used
 
 | Data | Used for | Stored? |
 | --- | --- | --- |
-| Current prompt text | Local scoring and, only when eligible, judge classification | No |
+| Current prompt text | Local scoring and, only when eligible, judge classification | No; one blocked CLI retry remains in memory |
 | Account and plan state | Judge eligibility and plan policy | No |
 | Rate-limit usage | Conservation and critical routing bands | No |
 | Available model metadata | Availability and supported-effort checks | No |
 | `gearbox.json` | Local routing preferences and limits | You control it |
+| Desktop override marker | One empty, per-session, one-shot marker | Until the next submission |
 | Optional JSONL metrics | Aggregate routing reports | Yes, without prompt text |
 
 Optional metrics contain only routing metadata: selected model, effort, role,
 source, confidence, account class, rate band, available-model count, and a
-timestamp. Gearbox does not store prompts, judge text, credentials, bearer
-tokens, or API keys.
+timestamp. Gearbox does not store prompts, prompt hashes, judge text,
+credentials, bearer tokens, or API keys.
 
 ## Two ways to use it
 
 | Surface | Mode | Behavior |
 | --- | --- | --- |
-| Codex CLI | Autopilot | Routes `turn/start` before execution and injects the model and effort. |
-| Codex desktop | Advisor | Recommends a route while preserving the selected model and effort. |
+| Codex CLI | Autopilot | Injects the route, or pauses once before an overpowered manual selection. |
+| Codex desktop | Advisor | Pauses once before an overpowered model selection, then honors an override. |
 
 ## Install from source
 
@@ -220,8 +223,11 @@ codex plugin add codex-gearbox@personal
 
 In Codex desktop, the plugin's `UserPromptSubmit` hook runs `env shift hook` so
 the `shift` shell builtin cannot shadow the installed helper. Current hooks
-cannot change model or effort, so Advisor mode displays a recommendation while
-every prompt continues with the user's selected settings.
+cannot change model or effort. Advisor mode therefore blocks the first prompt
+when the selected model is stronger than recommended: change the model and
+resend, or resend unchanged once to proceed anyway. The current desktop hook
+payload does not expose selected reasoning effort, so effort gating is available
+in CLI Autopilot but remains recommendation-only on desktop.
 
 The marketplace points to this repository's `main` branch. To refresh cached
 plugin files manually:
