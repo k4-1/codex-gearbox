@@ -6,7 +6,7 @@
   "architecture": {
     "64bit": {
       "url": "https://github.com/k4-1/codex-gearbox/releases/download/codex-gearbox-v0.6.0/codex-gearbox-x86_64-pc-windows-msvc.exe",
-      "hash": "40fdce30958bf9f69e85ee1993f49afc24233e9531dcae69432fc485d060eb17"
+      "hash": "b7ada9a30a3c03d3289a07eab4702b338d65870b2dbe519101bd5a5a2821a94c"
     }
   },
   "bin": [
