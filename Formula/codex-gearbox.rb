@@ -1,21 +1,21 @@
 class CodexGearbox < Formula
   desc "Plan-aware Codex model and effort router"
   homepage "https://github.com/k4-1/codex-gearbox"
-  version "0.6.0"
+  version "0.8.0"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/k4-1/codex-gearbox/releases/download/codex-gearbox-v0.6.0/codex-gearbox-aarch64-apple-darwin"
-      sha256 "d376e2b2e018f14119f9f39b4df50a6c81379fdb2815f0e02378dcb441060cfd"
+      url "https://github.com/k4-1/codex-gearbox/releases/download/codex-gearbox-v0.8.0/codex-gearbox-aarch64-apple-darwin"
+      sha256 "787fc7c7a34ebe5516b93dde1381d3421793fb3497562f05f6225b73f6007217"
     else
-      url "https://github.com/k4-1/codex-gearbox/releases/download/codex-gearbox-v0.6.0/codex-gearbox-x86_64-apple-darwin"
-      sha256 "24d21238904685a7982a90caac820ec5a715b3b6308c8bc3ee38e6b73e6b845d"
+      url "https://github.com/k4-1/codex-gearbox/releases/download/codex-gearbox-v0.8.0/codex-gearbox-x86_64-apple-darwin"
+      sha256 "8661a8cceb47d49685ba6f2e9c55bc258c37bdfef780e7dd095ef4708083fa50"
     end
   end
 
   on_linux do
-    url "https://github.com/k4-1/codex-gearbox/releases/download/codex-gearbox-v0.6.0/codex-gearbox-x86_64-unknown-linux-gnu"
-    sha256 "3fbbf544033dd1dc0c9c0cf02a79774a48c8ad31b88e3b70e5860a93adf8f9bb"
+    url "https://github.com/k4-1/codex-gearbox/releases/download/codex-gearbox-v0.8.0/codex-gearbox-x86_64-unknown-linux-gnu"
+    sha256 "d85731975b8908696c1e5b212569f543aef016bfd67e6d3acc7f6476aa825558"
   end
 
   def install
