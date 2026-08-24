@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.8.0](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.7.0...codex-gearbox-v0.8.0) (2026-08-24)
+
+
+### 🚀 New for users
+
+* add automatic binary updates ([10c3c5a](https://github.com/k4-1/codex-gearbox/commit/10c3c5ad3b22a121380cb67ece0b0824acecdad8))
+* add hybrid Luna routing ([83781e0](https://github.com/k4-1/codex-gearbox/commit/83781e0e7fd15d77c5b4f917c6f6e663af25cb6b))
+* brand plugin with gear shift icon ([d8fab34](https://github.com/k4-1/codex-gearbox/commit/d8fab34dfd322300e3e19e93384680dacae4cd67))
+* **cli:** add shell-safe utility command ([bd1fd4e](https://github.com/k4-1/codex-gearbox/commit/bd1fd4eca051cc5eb30c00424329d7d8bcb8ac44))
+* **distribution:** add Homebrew and Scoop installs ([98843eb](https://github.com/k4-1/codex-gearbox/commit/98843eb7b4365976a2acd9493e2b89b7453e7774))
+* **distribution:** publish npm installer ([0c29b75](https://github.com/k4-1/codex-gearbox/commit/0c29b7530c044c09fdb9dfa78b8c8f40bf87f815))
+* **distribution:** publish npm installer ([cce01bd](https://github.com/k4-1/codex-gearbox/commit/cce01bd5b5d49b3ac5e2691ffb961c0e9e6302b9))
+* make desktop hook advisory ([313578f](https://github.com/k4-1/codex-gearbox/commit/313578f971d85284d3db31de066c9a3619cc9e41))
+
+
+### 🐛 Fixes
+
+* **ci:** resolve release by explicit repository ([f4fe52d](https://github.com/k4-1/codex-gearbox/commit/f4fe52d8282fd001cd4a838302cd51b71892b5f4))
+* **hook:** prevent recursive app server leaks ([aa72a6d](https://github.com/k4-1/codex-gearbox/commit/aa72a6d0d8179fe52f0e7f34e69521d013a68ce9))
+* **plugin:** align marketplace version ([1362bbb](https://github.com/k4-1/codex-gearbox/commit/1362bbb5ab92acdaaa05073120d01faebe241705))
+* **release:** authenticate asset uploads ([735ec18](https://github.com/k4-1/codex-gearbox/commit/735ec188965aeccba5fbc16e95de4c2792457a05))
+* **release:** authenticate asset uploads ([d693a77](https://github.com/k4-1/codex-gearbox/commit/d693a77b3b467fd9c44cb8b0545f0a0feabdaea1))
+* **release:** build assets after publishing ([8f6220f](https://github.com/k4-1/codex-gearbox/commit/8f6220f64c59c257d26c2e192795636a57dc58c9))
+* **release:** configure manifest package ([259fa64](https://github.com/k4-1/codex-gearbox/commit/259fa6439f971a478d1362b71c52580cadb45adc))
+* **update:** accept component release tags ([2b2cbb9](https://github.com/k4-1/codex-gearbox/commit/2b2cbb9bc6f0de741da9d26afa202331de921a44))
+
+
+### 📚 Documentation
+
+* add feedback and discussion channels ([#3](https://github.com/k4-1/codex-gearbox/issues/3)) ([658cecb](https://github.com/k4-1/codex-gearbox/commit/658cecb7a6b766b761e7e31b3060fb695f885501))
+* configure automatic plugin distribution ([b8a54df](https://github.com/k4-1/codex-gearbox/commit/b8a54df573add0073ada37d16395b6d47d8f502d))
+* revamp README with Gearbox story and icon ([350dc99](https://github.com/k4-1/codex-gearbox/commit/350dc996a1370c668d41b3f28941d9cac7d3cf33))
+* revamp README with Gearbox story and icon ([96f0bee](https://github.com/k4-1/codex-gearbox/commit/96f0beef65fb106608657afc416deb6ce0f53d88))
+
 ## [0.6.1](https://github.com/k4-1/codex-gearbox/compare/codex-gearbox-v0.6.0...codex-gearbox-v0.6.1) (2026-08-19)
 
 
