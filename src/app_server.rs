@@ -45,6 +45,7 @@ impl ManagedServer {
         let url = format!("ws://{address}");
         let child = tokio::process::Command::new("codex")
             .args(["app-server", "--listen", &url])
+            .kill_on_drop(true)
             .stdin(Stdio::null())
             .stdout(Stdio::null())
             .stderr(Stdio::null())

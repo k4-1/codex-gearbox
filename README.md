@@ -223,6 +223,7 @@ codex plugin add codex-gearbox@personal
 
 In Codex desktop, the plugin's `UserPromptSubmit` hook runs `env shift hook` so
 the `shift` shell builtin cannot shadow the installed helper. Current hooks
+use deterministic routing without starting a nested Codex App Server and
 cannot change model or effort. Advisor mode therefore blocks the first prompt
 when the selected model is stronger than recommended: change the model and
 resend, or resend unchanged once to proceed anyway. The current desktop hook
